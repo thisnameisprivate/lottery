@@ -139,20 +139,29 @@ $ip = $_SERVER['REMOTE_ADDR'];
     var click=false;
 
     window.onload=function(){
-        // 判断该ip是否已经进行过抽奖
-        var ipaddress = document.getElementById('ipaddress');
-        if (ipaddress != null && localStorage.getItem('ipaddress') == null) {
-            localStorage.setItem('ipaddress', ipaddress);
-        } else {
-            alert("已经进行过抽奖了~");
-            window.location = './localhost/';
-        }
-        lottery.init('lottery');
         var i = 0;
-        // 判断当前用户抽奖次数
+        lottery.init('lottery');
         $("#lottery a").click(function(){
+            var ipaddress = document.getElementById('ipaddress');
+
+
+            // if (localStorage.getItem(ipaddress) == null) {
+            //     localStorage.setItem(ipaddress, 0);
+            // } else {
+            //     var oldDeg = parseInt(localStorage.getItem(ipaddress));
+            //     localStorage.setItem(ipaddress, oldDeg++);
+            //     console.log(localStorage.getItem(ipaddress));
+            // }
+            // 判断该ip是否已经进行过抽奖
+
+
+
+            if (ipaddress != null && localStorage.getItem('ipaddress') != ipaddress) {
+                // 更新抽奖次数
+                localStorage.setItem('ipaddress', ipaddress);
+            }
             if (i >= 3) {
-                alert("已经进行过抽奖了。");
+                alert("已经进行过抽奖了~");
                 return;
             }
             i ++;
