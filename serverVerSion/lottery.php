@@ -6,13 +6,13 @@ $ip = $_SERVER['REMOTE_ADDR'];
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>广元协和医院抽奖活动</title>
+    <title>jQuery九宫格大转盘抽奖</title>
     <style>
-        #lottery{width:570px;height:510px;margin:0px auto;border:4px solid #ba1809; margin-top:200px;}
+        #lottery{width:570px;height:510px;margin:0px auto;border:4px solid #ba1809;}
         #lottery table{background-color:yellow;}
         #lottery table td{position:relative;width:190px;height:170px;text-align:center;color:#333;font-index:-999}
         #lottery table td img{display:block;width:190px;height:170px;}
-        #lottery table td a{width:190px;height:170px;display:block;text-decoration:none; background:url(images/lottery1.jpg) no-repeat top center;}
+        #lottery table td a{width:190px;height:170px;display:block;text-decoration:none;background:url(images/lottery1.jpg) no-repeat top center;}
         #lottery table td a:hover{background-image:url(images/lottery2.jpg);}
         #lottery table td.active .mask{display:block;}
         .mask{
@@ -33,19 +33,19 @@ $ip = $_SERVER['REMOTE_ADDR'];
 <div id="lottery">
     <table border="0" cellpadding="0" cellspacing="0">
         <tr>
-            <td class="lottery-unit lottery-unit-0" text="围裙"><img src="gift0.jpg"><div class="mask"></div></td>
-            <td class="lottery-unit lottery-unit-1" text="药箱"><img src="gift1.jpg"><div class="mask"></div></td>
-            <td class="lottery-unit lottery-unit-2" text="谢谢参与"><img src="gift2.jpg"><div class="mask"></div></td>
+            <td class="lottery-unit lottery-unit-0" text="健康的妈妈"><img src="gift0.jpg"><div class="mask"></div></td>
+            <td class="lottery-unit lottery-unit-1" text="谢谢参与"><img src="gift1.jpg"><div class="mask"></div></td>
+            <td class="lottery-unit lottery-unit-2" text="勤劳的妈妈"><img src="gift2.jpg"><div class="mask"></div></td>
         </tr>
         <tr>
             <td class="lottery-unit lottery-unit-7" text="谢谢参与"><img src="images/gift7.jpg"><div class="mask"></div></td>
             <td><a href="#"></a></td>
-            <td class="lottery-unit lottery-unit-3" text="项链"><img src="gift3.jpg"><div class="mask"></div></td>
+            <td class="lottery-unit lottery-unit-3" text="谢谢参与"><img src="gift3.jpg"><div class="mask"></div></td>
         </tr>
         <tr>
-            <td class="lottery-unit lottery-unit-6" text="谢谢参与"><img src="images/gift6.jpg"><div class="mask"></div></td>
+            <td class="lottery-unit lottery-unit-6" text="美丽的妈妈"><img src="images/gift6.jpg"><div class="mask"></div></td>
             <td class="lottery-unit lottery-unit-5" text="谢谢参与"><img src="images/gift5.jpg"><div class="mask"></div></td>
-            <td class="lottery-unit lottery-unit-4" text="水杯"><img src="gift4.jpg"><div class="mask"></div></td>
+            <td class="lottery-unit lottery-unit-4" text="慈爱的妈妈"><img src="gift4.jpg"><div class="mask"></div></td>
         </tr>
     </table>
 </div>
