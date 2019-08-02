@@ -5,14 +5,43 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>This Is Exercise</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
-<form action="action.php" method="post">
-    <input type="text" name="username">
-    <input type="password" name="password">
-    <button>提交</button>
-    <a href="action.php?fid=1&tid=2">1231231</a>
-</form>
+<!--<form action="action.php" method="post">-->
+    <!--<input type="text" name="username">-->
+    <!--<input type="password" name="password">-->
+    <!--<button>提交</button>-->
+    <!--<a href="action.php?fid=1&tid=2">Remote Link</a>-->
+<!--</form>-->
+<div id="app-5">
+    <p>{{ message }}</p>
+    <input type="text" v-model="message">
+    <button v-on:click="reverseMessage">reverseMessage</button>
+</div>
 </body>
+<script type="text/javascript">
+    var app5 = new Vue({
+        el: '#app-5',
+        data: {
+            message: 'hello, Vue.js!'
+        },
+        methods: {
+            reverseMessage: function () {
+                this.message = this.message.split('').reverse().join('')
+            }
+        }
+    })
+
+    function createKeyToOldIdx (children, beginIdx, endIdx) {
+        let i, key
+        const map = {}
+            for (i = beginIdx; i <= endIdx; ++i) {
+            key = children[i].key
+                if (isDef(key)) map[key] = i
+            }
+            return map;
+    }
+</script>
 </html>
