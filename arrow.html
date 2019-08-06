@@ -6,6 +6,37 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>arrow function</title>
+    <style type="text/css">
+        .article {
+            display: inline-block;
+            width: 50%;
+            margin-bottom: 1em;
+            font-family: sans-serif;
+            border-radius: 1rem;
+            box-shadow: 12px 12px 2px 1px rgba(0, 0, 0, .2)
+        }
+        .sidebar {
+            width: 25%;
+            margin-left: 5px;
+        }
+        /* Good Instance */
+        .article, .sidebar {
+            display: inline-block;
+        }
+        .article {
+            width: 50%;
+            margin-bottom: 1em;
+        }
+        .sidebar {
+            width: 25%;
+            margin-left: 5px;
+        }
+        .card {
+            font-family: sans-serif;
+            brder-radius: 1rem;
+            box-shadow: 12px 12px 2px 1px rgba(0, 0, 0, .2);
+        }
+    </style>
 </head>
 <body>
 
@@ -213,5 +244,60 @@
     instance1.colors.push('black')
     console.log(instance1)
     console.log(instance2)
+
+    // apply
+    const obj = {
+        age: 24,
+        name: 'OBKoro1'
+    }
+    const obj2 = {
+        age: 777
+    }
+    callObj(obj, handle)
+    callObj(obj2, handle)
+    // 根据某些条件来决定要传递参数的数量、以及顺序
+    function callObj (thisAge, fn) {
+        let params = []
+        if (thisAge.name) {
+            params.push(thisAge.name)
+        }
+        if (thisAge.age) {
+            params.push(thisAge.age)
+        }
+    }
+    function hadnle(...params) {
+        console.log('params', params)
+    }
+    // bind的应用场景
+    for (var i = 1; i <= 5; i ++) {
+        setTimeout(function test () {
+            console.log(i)
+        }, i * 1000)
+    }
+    // console.log 6 6 6 6 6 6
+
+    // 使用闭包
+    for (var i = 1; i <= 5; i ++) {
+        (function (i) {
+            setTimeout(function () {
+                console.log(i)
+            }, i * 1000)
+        })(i)
+    }
+    // 使用bind
+    for (var i = 1; i <= 5; i++) {
+        // 缓存参数
+        setTimeout(function (i) {
+            console.log('bind', i) // 依次输出：1 2 3 4 5
+        }.bind(null, i), i * 1000);
+    }
+
+    class Page {
+        constructor  (callBack) {
+            this.className = 'Page'
+            this.MessageCallBack = callBack
+            this.MessageCallBack ('Request login page it Message')
+        }
+    }
 </script>
 </html>
