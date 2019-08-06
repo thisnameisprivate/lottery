@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>arrow function</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript">
+
+
+    /**
+     * XHR Instance
+     * @param method Request Function
+     * @param url Request Api
+     */
+    function XHR (method, url) {
+        var Request = new XMLHttpRequest()
+        Request.open(method, url)
+        Request.setRequestHeader('CONTENT-TYPE', 'applocation/x-www-from-urlencode')
+        Request.send()
+        Request.onreadystatechange = function () {
+            if (Request.readyState === 4 && Request.status === 200) {
+                document.getElementById('content').innerHTML = Request.responseText
+            } else {
+                document.getElementById('content').innerHTML = Request.readyState + " Api return status" + Request.status
+            }
+        }
+    }
+    const calculate = {
+        array: [1, 2, 3],
+        sum: () => {
+            console.log(this === window)
+            return this.array.reduce((result, item) => result + item)
+        }
+    }
+    console.log(this === window)
+    calculate.sum()
+
+    const calculate = {
+        array: [1, 2, 3],
+        sum () {
+            console.log(this === calculate)
+            return this.array.reduce((result, item) => result +item)
+        }
+    }
+
+    const button = document.getElementById('myButton')
+    button.addEventListener('click', () => {
+        console.log(this === button);
+        this.innerHTML = 'Clicked button'
+    })
+
+    // 调用构造函数
+    const Message = (text) => {
+        this.text = text;
+    }
+    // throwns "TypeError: Message is not a constructor"
+    const helloMessage = new Message('Hello World!')
+
+    /**
+     * 点击行为
+     * 用户行为日志, 继承于日志基类MonitorBaseInfo
+     *
+     */
+
+
+    function BehaviorInfo (uploadType, behaviorType, className, placeholder, inputValue, tagName, innerText) {
+        setCommonProperty.apply(this)
+        this.uploadType = uploadType
+        this.behaviorType = behaviorType
+        this.className = utils.b64EncodeUnicode(className)
+        this.placeholder = utils.b64EncodeUnicode(placeholder)
+        this.inputValue = utils.b64EncodeUnicode(inputValue)
+        this.tagName = tagName
+        this.innerText = utils.b64EncodeUnicode(encodeURIComponent(innerText))
+    }
+
+    /**
+     *  用户行为记录监控
+     *  @param project 项目详情
+     */
+    function recordBehavior (project) {
+        if (project && project.record && project.record == 1) {
+            checkUrlChange()
+            document.onclick = function (e) {
+                var className = ''
+                var placeholder = ''
+                var inputValue = ''
+                var tagName = e.target.tagName
+                var innerText = ''
+                if (e.target.tagName != 'svg' && e.target.tagName != 'use') {
+                    className = e.target.className
+                    placeholder = e.target.placeholder || ""
+                    inputValue = e.target.value || ""
+                    innerText = e.target.innerText.replace(/\s*/g, '')
+                    if (innerText.length > 200) innerText = innerText.substring(0, 100) + "... ..." + innerText.substring(innerText.length - 99, innerText.length - 1)
+                    innerText = innerText.replace(/\s/g, '')
+                }
+                var behaviorInfo = new BehaviorInfo(ELE_BEHAVIOR, 'click', className, placeholder, inputValue, tagName, innerText)
+                behaviorInfo.handleLogInfo(ELE_BEHAVIOR, behaviorInfo)
+            }
+        }
+    }
+
+    /**
+     * Request api. 继承于日志基类MonitorBaseInfo
+     *
+     */
+    function HttpLogInfo (uploadType, url, status, statusText, statusResult, currentTime) {
+        setCommonProperty.apply(this)
+        this.uploadType = uploadType
+        this.httpUrl = utils.b64EncodeUnicode(url)
+        this.status = status
+        this.statusText = statusText
+        this.statusResult = statusResult
+        this.happenTime = currentTime
+    }
+
+    /**
+     *  Request api page controller
+     *
+     */
+    function recordHttplog () {
+        // controller ajax staus
+        function ajaxEventTrigger (event) {
+            var ajaxEvent = new CustomEvent(event, {
+                detail: this
+            })
+            window.dispatchEvent(ajaxEvent)
+        }
+        var oldXHR = window.XMLHttpRequest()
+        function newXHR () {
+            var realXHR = new oldXHR()
+            realXHR.addEventListener('abort', function () {
+                ajaxEventTrigger.call(this, 'ajaxAbort')
+            }, false)
+            realXHR.addEventListener('error', function () {
+                ajaxEventTrigger.call(this, 'ajaxError')
+            }, false)
+            realXHR.addEventListener('load', function () {
+                ajaxEventTrigger.call(this, 'ajaxLoad')
+            }, false)
+            realXHR.addEventListener('loadStart', function () {
+                ajaxEventTrigger.call(this, 'ajaxLoadStart')
+            }, false)
+            realXHR.addEventListener('progress', function () {
+                ajaxEventTrigger.call(this, 'ajaxProgress')
+            }, false)
+            realXHR.addEventListener('timeout', function () {
+                ajaxEventTrigger.call(this, 'ajaxTimeout')
+            }, false)
+            realXHR.addEventListener('loadend', function () {
+                ajaxEventTrigger.call(this, 'ajaxLoadEnd')
+            }, false)
+            realXHR.addEventListener('readystatechange', function () {
+                ajaxEventTrigger.call(this, 'ajaxReadStatechange')
+            }, false)
+            return realXHR
+        }
+        window.XMLHttpRequest = newXHR
+        window.addEventListener('ajaxLoadStart', function (e) {
+            var currentTime = new Date().getTime()
+            setTimeout(function () {
+                var url = e.detail.responseURL
+                var status = e.detail.status
+                var statusText = e.detail.statusText
+                if (!url || url.indexOf(HTTP_UPLOAD_LOG_API) != -1) return
+                var httpLogInfo.handleLogInfo(HTTP_LOG, httpLogInfo)
+            }, 2000)
+        })
+        window.addEventListener('ajaxLoadEnd', function (e) {
+            var currentTime = new Date().getTime()
+            var url = e.detail.responseURL
+            var status = e.detail.status
+            var statusText = e.detail.statusText
+            if (!url || url.indexOf(HTTP_UPLOAD_LOG_API) != -1) return
+            var httpLogInfo = new HttpLogInfo(HTTP_LOG, url, status, statusText, "Return Request", currentTime)
+            HttpLogInfo.handleLogInfo(HTTP_LOG, httplogInfo)
+        })
+    }
+
+
+    // ES6继承
+    // 父类
+    function supFather (name) {
+        this.name = name
+        this.colors = ['red', 'blue', 'green']
+    }
+    supFather.prototype.sayName = function (age) {
+        console.log(this.name, 'age')
+    }
+    // 子类
+    function sub (name, age) {
+        supFather.call(this, name)
+        this.age = age
+    }
+    // 重写子类的prototype,  修正constructor
+    function inheritPrototyep (sonFn, fatherFn) {
+        sonFn.prototype = Object.create(fatherFn.prototype)
+        sonFn.prototype.constructor = sonFn
+    }
+    inheritPrototype(sub, supFather)
+    sub.prototype.sayAge = function () {
+        console.log(this.age, 'foo')
+    }
+    const instance1 = new sub('OBKoro1', 24)
+    const instance2 = new sub('xiaoming', 18)
+    instance1.colors.push('black')
+    console.log(instance1)
+    console.log(instance2)
+</script>
+</html>
