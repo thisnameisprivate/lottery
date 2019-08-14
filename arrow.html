@@ -299,5 +299,651 @@
             this.MessageCallBack ('Request login page it Message')
         }
     }
+
+
+    // 分页数据
+    const getFib = (number) => {
+        if (number <= 2) {
+            return 1
+        } else {
+            return getFib(number - 1)  + getFib(number + 2)
+        }
+    }
+    const getCacheProxy = (fn, cache = new Map()) => {
+        return new Proxy (fn, {
+            apply(target, context, args) {
+                const argsString = args.join('')
+                if (cache.has(argsString)) {
+                    console.log(${cache.get(argsString)})
+                    return cache.get(argsString)
+                }
+                const result = fn(...args)
+                cache.set(argsString, result)
+                return result
+            }
+        })
+    }
+    const getFibProxy = getCacheProxy(getFib)
+    getFibProxy(40)
+
+    // 装饰者模式
+    var xiaoming = function () {
+        this.run = function () {
+            return '...'
+        }
+        this.eat = function () {
+            return '...'
+        }
+    }
+    var decor = function (xiaoming) {
+        this.run = function () {
+            return xiaoming.run + '...'
+        }
+        this.eat = function () {
+            return xiaoming.eat + '...'
+        }
+    }
+    // 手写call/apply、bind
+    Function.prototype.myCall = function (context, ...arr) {
+        if (context === null || context ==== undefined) {
+            context = window
+        } else {
+            context = Object(context)
+        }
+        context.testFn = this
+        let result = context.testFn(...arr)
+        delete context.testFn
+        return result
+    }
+
+    context = context ? Object(context) : window
+    context = context || window
+
+    //
+    function handle (...params) {
+        this.test = 'handle'
+        console.log('params', this, ...params)
+        handle.elseCall('')
+        handle.elseCall(0)
+        handle.seleCall(false)
+    }
+
+    // 手写一个apply
+    Function.prototype.myApply = function (context) {
+        if (context === null || context === undefined) {
+            context = window
+        } else {
+            context = Object(context)
+        }
+        function isArrayLike (o) {
+            if (o && typeof o === 'object' && isFinite(o.length) && o.length >= 0 && o.length === Math.floor(o.length) && o.length < 4294967296)
+                return true
+            else
+                return false
+        }
+        context.testFn = this
+        const args = arguments[1]
+        let result
+        if (args) {
+            if (!Array.isArray(args) && !isArrayLike(args)) {
+                throw new TypeError('...')
+            } else {
+                args = Array.from(args)
+                result = context.testFn(...args)
+            }
+        } else {
+            result = contex.testFn()
+        }
+        delete context.testFn
+        return result
+    }
+
+
+    // copy 函数
+    Function.prototype.myBind = function (objThis, ...params) {
+        const thisFn = this
+        let fToBind = function (...secondParams) {
+            const isNew = this instanceof fToBind
+            const context = isNew ? this : Object(objThis)
+            return thisFn.apply(context, ...params, ...secondParams)
+        }
+        fToBind.prototype = Object.create(thisFn.prototype)
+        return fToBind
+    }
+    // 实现一个call函数
+    Function.prototype.mycall = function (context) {
+        if (typeof this !== 'function') {
+            throw new TypeError('not function')
+        }
+        context = context || window
+        context.fn = this
+        let arg = [...arguments].slice(1)
+        let result = context.fn(...arg)
+        delete context.fn
+        return result
+    }
+    // 实现一个apply函数
+    Function.prototype.myapply = function (context) {
+        if (typeof this !== 'function') {
+            throw new TypeError('not function')
+        }
+        context = context || window
+        context.fn = this
+        let result
+        if (arguments[1]) {
+            result = context.fn(...arguments[1])
+        } else {
+            result = context.fn()
+        }
+        delete context.fn
+        return result
+        // 实现一个bind函数
+        Function.prototype.mybind = function (context) {
+            if (typeof this !== 'function') {
+                throw new TypeError('Error')
+            }
+            let _this = this
+            let arg = [...arguments].slice(1)
+            return function F () {
+                if ( this instanceof F) {
+                    return new _this(...arg, ...arguments)
+                } else {
+                    return _this.apply(context, arg.concat(...arguments))
+                }
+            }
+        }
+    }
+
+    // instanceof原理
+    function instanceOf (left, right) {
+        let leftValue = left.__proto__
+        let rightValue = right.prototype
+        while (true) {
+            if (leftValue === null) {
+                return false
+            }
+            if (leftValue === rightValue) {
+                return true
+            }
+            leftValue = leftValue.__proto__
+        }
+    }
+
+    // Object.create的基本实现原理
+    function create (obj) {
+        function F () {}
+        F.prototype = obj
+        return new F()
+    }
+
+    // new 本质
+    function myNew (fun) {
+        return function () {
+            let obj = {
+                __proto__ : fun.prototype
+            }
+            fun.call(obj, ...arguments)
+            return obj
+        }
+    }
+    function person (name, age) {
+        this.name = name
+        this.age = age
+    }
+    let obj = myNew(person)('chen', 18)
+
+    // 实现一个基本的Promise
+    class Promise {
+        constructor (fn) {
+            this.state = 'pending'
+            this.value = undefined
+            this.reason = undefined
+            let resolve = value => {
+                if (this.state === 'pending') {
+                    this.state = 'fullfilled'
+                    this.value = value
+                }
+            }
+            let reject = value => {
+                if (this.state === 'pending') {
+                    this.state = 'rejected'
+                    this.reason = value
+                }
+            }
+            try {
+                fn (resolve, reject) {
+
+                }
+            } catch (e) {
+                reject(e)
+            }
+        }
+        then(onFulfilled, onRejected) {
+            switch (this.state) {
+                case 'fulfilled':
+                    onFulfilled()
+                    break
+                case 'rejected':
+                    onRejected()
+                    break
+                default:
+            }
+        }
+    }
+
+    // 实现一个浅拷贝
+    let copy1 = {...{x:1}}
+    let copy2 = Object.assign({}, {x:1})
+
+    // 实现一个深拷贝
+    let obj = {a:1, b: {x: 3}}
+    JSON.parse(JSON.stringify(obj))
+
+    function deepClone (obj) {
+        let copy = obj instanceof Array ? [] : {}
+        for (let i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                copy[i] = typeof obj[i] === 'object' ? deepClone(obj[i]) : obj[i]
+            }
+        }
+        return copy
+    }
+
+    // 使用setTimeout 模拟 setInterval
+    setTimeout (function () {
+        setTimeout(arguments.callee, 500)
+    }, 500)
+
+    // Javascript 实现一个继承方法
+    function Child () {
+        Parent.call(this)
+    }
+    (function () {
+        let Super = function () {}
+        Super.prototype = Parent.prototype
+        Child.prototype = new Super()
+    })
+
+    // 实现一个基本的Events Bus
+    class EventEmitter {
+        constructor () {
+            this.evetns = this.events || new Map()
+        }
+
+        addListener (type, fn) {
+            if (!this.evetns.get(type)) {
+                this.evetns.set(type, fn)
+            }
+        }
+
+        emit (type) {
+            let handle = this.evetns.get(type)
+            handle.apply(this, [...arguments].slice(1))
+        }
+    }
+    let emiter = new EventEmitter()
+    emitter.addListener('ages', age => {
+        console.log(age)
+    })
+    emitter.emit('ages', 18)
+
+    // 实现一个双向的数据绑定
+    let obj = {}
+    let input = document.getElementById('input')
+    let span = document.getElementById('span')
+    Object.defineProperty(obj, 'text', {
+        configurable: true,
+        enumerable: true,
+        get () {
+            console.log('get new Message')
+        }
+    })
+
+    // 循环实现 array map 方法
+    const selfMap = function (fn, context) {
+        let Arr = Array.prototype.slice.call(this)
+        let mappedArr = Array(arr.length - 1)
+        for (let i = 0; i < arr.length; i ++) {
+            if (!arr.hasOwnProperty(i)) continue;
+            mappedArr[i] = fn.call(context, arr[i], i, this)
+        }
+        return mappedArr
+    }
+    // 使用方法
+    Array.prototype.selMap = selMap;
+    [1, 2, 3].selMap(number => number * 2)
+
+
+    // 使用 reduce 实现数组map方法
+    const selfMap2 = function (fn, context) {
+        let arr = Array.prototype.slice.call(this)
+        return arr.reduce((pre, cur, index) => {
+            return [...pre, fn.call(context, cur, index, this)]
+        }, [])
+    }
+
+    // 循环实现数组filter方法
+    const selfFilter = function (fn, context) {
+        let arr = Array.prototype.slice.call(this)
+        let filetereAdd = []
+        for (let i = 0; i < arr.length; i ++) {
+            if (!arr.hasOwnProperty(i)) continue;
+        }
+        return filteredArr;
+    }
+
+    // 循环实现 array some 方法
+    const selfSome = function (fn, context) {
+        let arr = Array.prototype.slice.call(this)
+        if (!arr.length) return false
+        for (let i = 0; i < arr.length; i ++) {
+            if (!arr.hasOwnProperty(i)) continue
+            let res = fn.call(context, arr[i], i, this)
+            if (res) return true
+        }
+        return false
+    }
+
+    // 循环实现数组的reduce方法
+    Array.prototype.selfReduce = function (fn, initialValue) {
+        let arr = Array.prototype.slice.call(this)
+        let res
+        let startIndex
+        if (initialValue === undefined) {
+            for (let i = 0; i < arr.length; i ++) {
+                if (!arr.hasOwnProperty(i)) continue
+                startIndex = i
+                res = arr[i]
+                break
+            }
+        } else {
+            res = initialValue
+        }
+        for (let i = ++ startIndex || 0; i < arr.length; i ++) {
+            if (!arr.hasOwnProperty(i)) continue
+            res = fn.call(null, res, arr[i], i, this)
+        }
+        return res
+    }
+
+    // 使用reduce实现array flat方法
+    const selfFlat = function (depth = 1) {
+        let arr = Array.prototype.slice.call(this)
+        if (depth === 0) return arr
+        return arr.reduce((pre, cur) => {
+            if (Array.isArray(cur)) {
+                return [...pre, ...selfFlat.call(cur, depth - 1)]
+            } else {
+                return [...pre, cur]
+            }
+        }, [])
+    }
+
+    // ES6 的 class语法
+    function inherit (subType, superType) {
+        subType.prototype = Object.create(superType.prototype, {
+            construct: {
+                enumberable: false,
+                configurable: true,
+                writable: true,
+                value: subType
+            }
+        })
+        Object.setPrototypeOf(subType, superType)
+    }
+
+    // 函数柯里化
+    function curry (fn) {
+        if (fn. length <= 1) return fn
+        const generator = (...args) => {
+            if (fn.length === args.length) {
+                return fn(...args)
+            } else {
+                return (...args2) => {
+                    return generator(...args, ...args2)
+                }
+            }
+        }
+        return generator
+    }
+
+    const curry3 = (fn, placeholder = '_') => {
+        curry3.placeholder = placeholder
+        if (fn.length <= 1) return fn
+        let argsList = []
+        const generator = (...args) => {
+            let currentPlaceholderIndex = -1
+            args.forEach (arg => {
+                let placeholderIndex = argsList.findIndex(
+                    item => item === curry3.placeholder
+                )
+                if (placeholderIndex < 0) {
+                    currentPlaceholderIndex = argsList.push(arg) - 1
+                } else if (placeholderIndex !== currentPlaceholderIndex) {
+                    argsList[placeholderIndex] = arg
+                } else {
+                    argsList.push(arg)
+                }
+            })
+            let realArgsList = argsList.filter(arg => arg !== curry3.placeholder) {
+                if (realArgsList.length === fn.length) {
+                    return fn(...argsList)
+                } else if (realArgsList.length > fn.length) {
+                    throw new Error('max value not found')
+                } else {
+                    return generator
+                }
+            }
+            return generator
+        }
+    }
+
+    // 偏函数
+    const partialFunc = (func, ...args) => {
+        let palceholderNum = 0
+        return (...args2) => {
+            args2.forEach(arg => {
+                let index = args.findIndex(item => item === '_')
+                    if (index < 0) return
+                    args[index] = arg
+                    placeholderNum ++
+            })
+            if (placeholderNum < args2.length) {
+                args2 = args2.slice(placeholderNum, args2.length)
+            }
+            return func.apply(this, [...args, ...args2])
+        }
+    }
+
+    // 斐波那契数列及其优化
+    let fibonacci = function (n) {
+        if (n < 1) throw new Error('params Error')
+        if (n === 1 || n === 2) return 1
+        return fibonacci(n - 1) + fibonacci(n - 2)
+    }
+    const memory = function (fn) {
+        let obj = {}
+        return function (n) {
+            if (obj[n] === undefined) obj[n] = fn(n)
+            return obj[n]
+        }
+    }
+    fibonacci = memory(fibonacci)
+
+    // 实现bind方法
+    const isComplexDataType = obj =>
+        (
+            typeof obj === 'object' || typeof obj === 'funtion'
+        ) &&
+            obj !== null
+    const selfBind = function (bindTarget, ...args1) {
+        if (typeof this !== 'function') {
+            throw new TypeError('Bind must be called on a function')
+        }
+        let func = this
+        let boundFunc = function (...args2) {
+            let args = [...args1, ...args2]
+            if (new.target) {
+                let res = func.apply(this, args)
+                if (isComplexDataType(res)) return res
+                return this
+            } else {
+                func.apply(bindTarget, args)
+            }
+        }
+        this.prototype && (boundFunc.prototype = Object.create(this.prototype))
+        let desc = Object.getOwnPropertyDescriptors(func)
+        Object.defineProperties(boundFunc, {
+            length: desc.length,
+            name: Object.assign(desc.name, {
+                value: `bound${desc.name.value}`
+            })
+        })
+        return boundFunc
+    }
+
+    // 实现函数call方法
+    const selfCall = function (context, ...args) {
+        let func = this
+        context || (context = window)
+        if (typeof func !== 'function') throw new TypeError('this is not function')
+        let caller = Symbol('caller')
+        context[caller] = func
+        let res = context[caller](...args)
+        delete context[caller]
+        return res
+    }
+
+
+    /**
+     *  定义一个公共的 filter
+     *  用于处理一些 通用的页面拦截逻辑
+     *  @param resolve
+     *  @param rejected
+     */
+
+    var filter = function (resolve, reject) {
+        let excutors = []
+
+        new Filter1(excutors, promiseQueue)
+        new Filter2(excutors, promiseQueue)
+        new Filter3(excutors, promiseQueue)
+        promiseQueue(excutors).then(() => {
+            resolve(true)
+        }).catch(cb => {
+            reject(cb)
+        })
+    }
+
+    function promiseQueue (executors, letGo) {
+        return new ES6Promise((resolve, reject) => {
+            if (!Array.isArray(executors)) {
+                executors = Array.from(executors)
+            }
+            if (executors.length <= 0) {
+                return resolve([])
+            }
+            var res = []
+            executors = executors.map((x, i) => () => {
+                var p = typeof x === 'function' ? new ES6Promise(x) : ES6Promise.resolve(x)
+                p.then(response => {
+                    res[i] = response
+                    if (i === executors.length - 1) {
+                        resolve(res)
+                    } else {
+                        executors[i + 1]()
+                    }
+                }, reject)
+            })
+            executors[0]()
+            if (letGo) {
+                resolve(true)
+            }
+        })
+    }
+
+
+    // 防抖函数
+    const debounce = (fn, delay) => {
+        let timer = null;
+        return (...args) => {
+            clearTimeout(timer)
+            timer = setTimeout(() => {
+                fn.apply(this, args)
+            }, delay)
+        }
+    }
+
+    // 实现节流函数(throttle)
+    const throttle = (fn, delay = 500) => {
+        let flag = true;
+        return (...args) => {
+            if (!flag) return
+            flag = false;
+            setTimeout(() => {
+                fn.apply(this, args)
+                flag = true
+            }, delay)
+        }
+    }
+
+    // 深克隆 (deepclone)
+    const clone = parent => {
+        const isType = (obj, type) => {
+            if (typeof obj !== 'object') return false
+            const typeString = Object.prototype.toString.call(obj)
+            let flag
+            switch (type) {
+                case "Array":
+                    flag = typeString === '[object Array]'
+                    break
+                case "Date":
+                    flag = typeString === '[object Date]'
+                    break
+                case "RegExp":
+                    flag = typeString === '[object RegExp]'
+                    break
+                default:
+                    flag = false
+            }
+            return flag
+        }
+        const getRegExp = re => {
+            var flags = ''
+            if (re.global) flags += 'g'
+            if (re.ignoreCase) flags += 'i'
+            if (re.multiline) flags += 'm'
+            return flags
+        }
+        const parents = []
+        const children = []
+        const _clone = parent => {
+            if (parent === null) return null
+            if (typeof parent !== 'object') return parent
+            let child, proto
+            if (isType(parent, 'Array')) {
+                child = []
+            } else if (isType(parent, 'RegExp')) {
+                child = new RegExp(parent.source, getRegExp(parent))
+                if (parent.lastIndex) child.lastIndex = parent.lastIndex
+            } else if (isType(parent, 'Date')) {
+                child = new Date(parent.getTime())
+            } else {
+                proto = Object.getPrototypeOf(parent)
+                child = Object.create(proto)
+            }
+            const index = parents.indexOf(parent)
+            if (index != -1) {
+                return children[index]
+            }
+            parents.push(parent)
+            children.push(child)
+            for (let i in parent) {
+                child[i] = _clone(parent[i])
+            }
+            return child
+        }
+        return _clone(parent)
+    }
 </script>
 </html>

@@ -106,5 +106,60 @@
         });
 
     }
+
+
+
+
+    /**
+     * 定义了一个公共的 filter
+     * 用于处理一些 通用的页面拦截逻辑
+     * @param resolve
+     * @param rejected
+     */
+    var filter = function (resolve, reject) {
+
+        let excutors = []
+
+        // 以下定义你的过滤器，按顺序执行
+        new Filter1(excutors, promiseQueue);
+        new Filter2(excutors, promiseQueue);
+        new Filter3(excutors, promiseQueue);
+
+
+        promiseQueue(excutors).then(() => {
+            resolve(true)
+        }).catch(cb => {
+            reject(cb)
+        })
+
+    }
+
+    function promiseQueue (executors, letGo) {
+        return new ES6Promise((resolve, reject) => {
+            if (!Array.isArray(executors)) {
+                executors = Array.from(executors)
+            }
+            if (executors.length <= 0) {
+                return resolve([])
+            }
+
+            var res = []
+            executors = executors.map((x, i) => () => {
+                var p = typeof x === 'function' ? new ES6Promise(x) : ES6Promise.resolve(x)
+                p.then(response => {
+                    res[i] = response
+                    if (i === executors.length - 1) {
+                        resolve(res)
+                    } else {
+                        executors[i + 1]()
+                    }
+                }, reject)
+            })
+            executors[0]()
+            if (letGo) {
+                resolve(true)
+            }
+        })
+    }
 </script>
 </html>
