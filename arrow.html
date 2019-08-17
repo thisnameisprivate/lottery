@@ -945,5 +945,85 @@
         }
         return _clone(parent)
     }
+
+    class EventEmitter {
+
+    }
+
+    var calculator = ( () => {
+        var initVal = 1
+        function addCalculator (val) {
+            initVal += val
+        }
+        return {
+            add: (addVal) => {
+                addCalculator(addVal)
+            },
+            result: () => {
+                return initVal
+            }
+        }
+    })()
+
+
+    console.log(calculator.result())
+    calculator.add(20)
+    console.log(calculator.result())
+
+    let list = [
+        {id: '1', name: 'jsliang'},
+        {id: '2', name: 'xxx'}
+    ];
+    function insertData (rowId) {
+        list = [
+            ...list.slice(0, list.findIndex(item => item.id === rowId) + 1),
+            {
+                id: '3',
+                name: ''
+            },
+            ...list.slice(list.findIndex(item => item.id === rowId) + 1)
+        ]
+    }
+    insertData('1')
+    console.log(list)
+
+
+    function isBigEnough (element) {
+        return element >= 10
+    }
+    var filtered = [12, 5, 8, 130, 44].filter(isBigEnough)
+    const number = [12, 5, 8, 130, 44]
+    const filterNumber = number.filter(item => item >= 10)
+
+    const filterNumber = number.filter((item, index, array) => {
+        console.log(array)
+        return item >= 10 && index > 3
+    })
+
+    let list = [
+        {id: '1', name: 'jsliang'},
+        {id: '2', name: 'xxx'},
+        {id: '3', name: 'JavaScriptLiang'}
+    ];
+    function changeData (id, newObj) {
+        list = [...list.filter(item => item.id !== id), newObj]
+    }
+    changeData('2', {
+        id: '4',
+        name: 'xxx'
+    })
+    [
+            {id: '1', name: 'jsliang'},
+            {id: '3', name: 'JavaScript'},
+            {id: '4', name: 'xxx'}
+    ]
+    let list = [
+        {id: '1', name: 'jsliang'},
+        {id: '2', name: 'xxx'},
+        {id: '3', name: 'JavaScriptLiang'}
+    ]
+    const ids = list.map(item => item.id)
+    const id1 = list[list.findIndex(item => item.name === 'JavaScriptLiang')].id
+    const id2 = list.find(item => item.name === 'JavaScriptLiang').id
 </script>
 </html>
