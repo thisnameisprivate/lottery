@@ -806,7 +806,7 @@
     const selfCall = function (context, ...args) {
         let func = this
         context || (context = window)
-        if (typeof func !== 'function') throw new TypeError('this is not function')
+        if (typeof func !== 'function') throw new TypeError('This is not found.')
         let caller = Symbol('caller')
         context[caller] = func
         let res = context[caller](...args)
@@ -1025,5 +1025,127 @@
     const ids = list.map(item => item.id)
     const id1 = list[list.findIndex(item => item.name === 'JavaScriptLiang')].id
     const id2 = list.find(item => item.name === 'JavaScriptLiang').id
+
+
+    const items = ['item1', 'item2', 'item3']
+    const copy = []
+    for (let i = 0; i < items.length; i ++) {
+        copy.push(items[i])
+    }
+    items.forEach(function (item) {
+        copy.push(item)
+    })
+
+    let arr = [1, 2, 3, 4, 5]
+    arr = new Array(arr.length).fill(0)
+
+    [1, 2, 3, 4].reduce((prev, next) => {
+        return prev + next
+    })
+    ['前端', 'pang', 'liagn'].reduce((prev, next, index) => {
+        return (index = 0 ? '-js' : '') + prev + 'js' + next
+    })
+
+
+    var inventory = [
+        {name: 'apples', quantity: 2},
+        {name: 'banans', quantity: 0},
+        {name: 'cherries', quantity: 5}
+    ];
+    function findCherries (fruit) {
+        return fruit.name === 'cherries'
+    }
+    inventory.find(findCherries)
+
+    var array1  = [5, 12, 8, 130, 44]
+    function isLargeNumber (element) {
+        return element > 13
+    }
+    array1.findIndex(isLargeNumber)
+
+
+    var urls = ['https://www.kkkk1000.com/images/getImgData/getImgDatadata.jpg']
+    function loadImg (url) {
+        return new Promise((resolve, reject) => {
+            const img = new Image()
+            img.onload = function () {
+                console.log('one image loading over')
+                resolve()
+            }
+            img.onerror = reject
+            img.src = url
+        })
+    }
+    function limitLoad (urls, handler, limit) {
+        const sequence = [].concat(urls)
+        let promises = []
+        promises = sequence.splice(0, limit).map((url, index) => {
+            return hadnler(url).then(() => {
+                return index
+            })
+        })
+        return sequence.reduce((last, url, currentIndex) => {
+            return last.then(() => {
+                return Promise.race(promises)
+            }).catch(err => {
+                console.error(err)
+            }).then((res) => {
+                promises[res] = handler(sequence[currentIndex]).then(() => { return res })
+            })
+        }, Promise.resolve()).then(() => {
+            return Promise.all(promises)
+        })
+    }
+    limitLoad(urls, loadImg, 3).then(() => {
+        console.log('all images load over')
+    }).catch(err => {
+        console.error(err)
+    })
+
+
+    const genUid = () => {
+        var length = 20
+        var soupLength = genUid.soup_.length
+        var id = []
+        for (var i = 0; i < length; i ++) {
+            id[i] = genUid.soup_.charAt(Math.random() * soupLength)
+        }
+        return id.join('')
+    }
+    genUid.soup_ = ''
+    genUid()
+
+    // 遍历类数组对象
+    const elements = document.querySelectorAll(selector)
+    [].prototype.forEach.call(elements, (el, idx, list) => {
+        console.log(el)
+    })
+
+    // 优化多层判断条件
+    const getScore = score => {
+        const scoreData = new Array(101).fill(0).map((data, idx) => ([idx, () => (idx < 60 ? 'OK' : 'NO')]))
+        const scoreMap = new Map(scoreData)
+        return (scoreMap.get(score) ? scoreMap.get(score) : 'don\'t know number')
+    }
+    getScore(30)
+
+    // 时间格式化
+    const dateFormatter = (formatter, date) => {
+        date = (date ? new Date(date) : new Date)
+        const Y = date.getFullYear() + '',
+            M = date.getMonth() + 1,
+            D = date.getDate(),
+            H = date.getHours(),
+            m = date.getMinutes(),
+            s = date.getSeconds()
+        return formatter.replace(/YYYY|yyyy/g, Y)
+            .replace(/YY|yy/g, Y.substr(2, 2))
+            .replace(/MM|g, (M < 10 ? '0' : '') + M)
+                .replace(/DD/g, (D < 10 ? '0' : '')) + D)
+            .replace(/HH/hh/g, (H < 10 ? '0' : '') + H)
+        .replace(/mm/g, (m < 10 ? '0' : '') + m)
+            .replace(/ss/g, (s < 10 ? '0' : '') + s)
+    }
+    dateFormatter('YYYY-MM-DD HH:mm', '1995/02/15 13:55')
 </script>
 </html>
