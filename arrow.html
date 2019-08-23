@@ -1147,5 +1147,150 @@
             .replace(/ss/g, (s < 10 ? '0' : '') + s)
     }
     dateFormatter('YYYY-MM-DD HH:mm', '1995/02/15 13:55')
+
+
+    var date = new Date()
+    date.setMonth(date.getMonth() + 1)
+    let lastDay = date.setDate(0)
+    console.log('last day: ' + new Date(lastDay).toLocaleString())
+
+
+    var date = new Date(2019, 0, 31)
+    date.setMonth(date.getMonth() + 1)
+    let lastDay = date.setDate(0)
+    console.log('last day: ' + new Date(lastDay).toLocaleString())
+
+    var date = new Date(2019, 0, 31)
+    date.setDate(28)
+    date.setMonth(date.getMonth() + 1)
+    let lastDay = date.setDate(0)
+    console.log('last day: ' + new Date(lastDay).toLocaleString())
+
+
+
+    const factorialArguments = function (num) {
+        if (num <= 1) {
+            return 1
+        } else {
+            return num * arguments.callee(num - 1)
+        }
+    }
+    console.log('5 x', factorialArguments(5))
+    const factorial = function f (num) {
+        if (num <= 1) {
+            return 1
+        } else {
+            return num * f(num - 1)
+        }
+    }
+    console.log('5 x', factorial(5))
+
+
+    const sum = function sum (a, b) {
+        return a + b
+    }
+    const sumByCall = function (a, b) {
+        return sum.call(this, a, b)
+    }
+    const sumByApply = function (a, b) {
+        return sum.apply(this, [a, b])
+    }
+    const sumByApplyArguments = function (a, b) {
+        return sum.apply(this, arguments)
+    }
+
+    console.log('sum :', sum(2, 7))
+    console.log('sumByCall :', sumByCall(2, 7))
+    console.log('sumByApply :', sumByApply(2, 7))
+    console.log('sumByApplyArguments :', sumByApplyArguments(2, 7))
+
+
+
+    const transmitByValue = function (str) {
+        str += ', wo shi pr'
+        return str
+    }
+
+    const str = 'Hello'
+    console.log('str before', str)
+    console.log('str by transmitByValue', transmitByValue(str))
+    console.log('str after', str)
+
+
+    const transmitByAddress = function (str) {
+        str.words += '. woshipr'
+        return str
+    }
+    const str = {
+        worlds: 'hello'
+    }
+    console.log('str before :', str.words)
+    console.log('str by transmitByAddress', transmitByAddress(str))
+    console.log('str after', str.worlds)
+
+    const closure = function () {
+        let num = 10
+        return function () {
+            return ++num
+        }
+    }
+    const closureAlias = closure()
+    console.log(closureAlias())
+    console.log(closureAlias())
+    console.log(closureAlias())
+    console.log(closureAlias())
+    console.log('------')
+    console.log(closure()())
+    console.log(closure()())
+    console.log(closure()())
+
+
+    var obj = {
+        name:'say',
+        say () {
+            return function () {
+                return this
+            }
+        }
+    }
+    console.log(obj.say()())
+
+    var obj = {
+        name: 'say',
+        say () {
+            return function () {
+                return this
+            }
+        }
+    }
+    console.log(obj.say().call(obj))
+
+
+    var obj = {
+        name: 'say',
+        say () {
+            var that = this
+            return function () {
+                return that
+            }
+        }
+    }
+
+    for (var i = 0; i <= 9; i ++) {
+        setTimeout(function () {
+            console.log(i)
+        })
+    }
+
+    for (var i = 0; i <= 9; i ++) {
+        (function () {
+            console.log(i)
+        })(i)
+    }
+
+    for (let i = 0; i <= 9; i ++) {
+        console.log(i)
+    }
+    
 </script>
 </html>
