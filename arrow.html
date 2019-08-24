@@ -1291,6 +1291,429 @@
     for (let i = 0; i <= 9; i ++) {
         console.log(i)
     }
-    
+
+    const movies = {
+        list: [
+            { title: 'heat' },
+            { title: 'Interstellar' }
+        ],
+        [Symbol.iterator]() {
+            let index = 0
+            return {
+                next: () => {
+                    if (index < this.list.length) {
+                        const value = this.list[index ++].title
+                        return {value, done: false}
+                    }
+                    return {done:true}
+                }
+            }
+        }
+    }
+
+    const [firstMovieTitle] = movies
+    console.log(firstMovieTitle)
+
+    function greet (obj, nameProp) {
+        const {[nameProp]: name = 'Unknown'} = obj
+        return `Hello, ${name}!`
+    }
+    greet({name: 'Batman'}, 'name') // => 'Hello, Batman!'
+    greet({ }, 'name') // => 'Hello, Unknown'
+
+    function SuperType () {
+        this.status = true
+    }
+    SuperType.prototype.getStatus = function () {
+        return this.status
+    }
+    function SubType () {
+        this.subStatus = false
+    }
+    SubType.prototype.getSubStatus = function () {
+        return this.subStatus
+    }
+    SubType.prototype = new SuperType()
+    var foo = new SubType()
+
+    function SuperType () {
+        this.name = ['dag', 'cat']
+    }
+    function SubType () {}
+    SubType.prototype = new SuperType()
+    var instance1 = new SubType()
+    var instance2 = new SubType()
+    console.log(instance2.name)
+
+    function Super () {
+        this.name = ['Mike', 'David']
+    }
+    Super.prototype.addname = function (name) {
+        this.name.push(name)
+    }
+    function Sub () {
+        Super.call(this)
+    }
+    var foo = new Sub()
+    foo.name // ['Mike', 'David']
+
+    function Super () {
+        this.name = ['Mike', 'David']
+    }
+    Super.prototype.addname = function (name) {
+        this.name.push(name)
+    }
+    function Sub () {
+        Super.call(this)
+    }
+    Sub.prototype = new Super()
+    Sub.prototype.constructor = Sub
+    Sub.prototype.getName = function () {
+        console.log(this.name.join(','))
+    }
+    var foo = new Sub()
+
+    function extend (obj) {
+        function noop () {
+            noop.prototype = obj
+            return new noop()
+        }
+        var Animals = {
+            name: 'animal',
+            type: ['dog', 'cat', 'bird']
+        }
+        var anotherAnimals = extends(Animals)
+        anotherAnimals.type.push('horse')
+
+        var yetAnotherAnimal = extends(Animals)
+        yetAnotherAnimal.type.push('whale')
+        console.log(Animals.type) // ['dog', 'cat', 'bird', 'horse', 'whale']
+
+        var Animals = {
+            name: 'animal',
+            type: ['dog', 'cat', 'bird']
+        }
+        var anotherAnimals = Object.create(Animals)
+        anotherAnimals.type.push('horse')
+    }
+
+
+    function cusExtend (obj) {
+        var clone = extend(obj)
+        clone.foo = function () {
+            console.log('foo')
+        }
+        return clone
+    }
+    var Animals = {
+        name:'animal',
+        type: ['dog', 'cat', 'bird']
+    }
+    var instance = cusExtend(Animals)
+    instance.foo()
+
+    function SuperType (name) {
+        this.name = name
+    }
+    function SubType (name, age) {
+        SuperType.call(this, name, age)
+        this.age = age
+    }
+    SubType.prototype = Object.create(SuperType.prototype)
+    SubType.prototype.constructor = SubType
+    var foo = new SubType('Mike', 16)
+
+    function objectCeate (o) {
+        var F = function () {}
+        var prototype = o.prototype
+        F.prototype = prototype
+        return new F()
+    }
+
+    class SuperType {
+        constructor (name) {
+            this.name = name
+        }
+    }
+    class SubType extends SuperType {
+        constructor (name, age) {
+            super(name)
+            this.age = age
+        }
+    }
+
+    foo.__proto__ => SubType.prototype
+    SubType.prototype.__proto__ => SupperType.prototype
+
+
+    SubType.__proto__ => SuperType
+
+    class A {
+
+    }
+
+    class B extends A {
+
+    }
+
+    Object.setPrototypeOf(B, A)
+    Object.setPrototypeOf(B.prototype, A.prototype) // B.prototype.__proto__ === A.prototype
+
+
+    Object.setPrototypeOf = Object.setPrototypeOf || function (obj, proto) {
+        obj.__proto__ = proto
+        return obj
+    }
+
+    'use strict'
+
+    function _typeof (obj) {
+        if (typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol') {
+            _typeof = function _typeof(obj) {
+                return typeof obj
+            }
+        } else {
+            _typeof = function _typeof (obj) {
+                return obj &&
+                typeof SYmbol === 'function' &&
+                obj.constructor === Symbol &&
+                obj !== Symbol.prototype
+                    ? 'symbol'
+                    : typeof obj
+            }
+        }
+        return _typeof(obj)
+    }
+
+    function _possibleCOnstructorReturn (self, call) {
+        if (call && (_typeof(call) === 'object' || typeof call === 'function')) {
+            return call
+        }
+        return _assertThisInitialized(self)
+    }
+
+    function _assertThisInitialized(self) {
+        if (self === void 0) {
+            throw new ReferenceError(
+                'this hasn\'t been initialised - super() hasn\'t been called'
+            )
+        }
+        return self
+    }
+
+    function _getPrototypeOf (o) {
+        _getPrototypeOf = Object.setPrototypeOf
+        ? Object.getPrototypeOf
+            : function _getPrototypeOf (o) {
+                return o.__proto__ || Object.getPrototypeOf(o)
+            }
+            return _getPrototypeOf(o)
+    }
+
+    function _inherits (subClass, superClass) {
+        if (typeof superClass !== 'function' && superClass != null) {
+            throw new TypeError('Super expression must either be null or a function')
+        }
+        subClass.prototype = Object.create(superClass && superClass.prototype, {
+            constructor: {value: subClass, writable: true, configurable: true}
+        })
+        if (superClass) _setPrototypeOf(subClass, superClass)
+    }
+
+    function _setPrototypeOf (o, p) {
+        _setPrototypeOf =
+            Object.setPrototypeOf ||
+                function _setPrototype (o, p) {
+                    o.__proto__ = p
+                    return o
+                }
+            return _setPrototypeOf(o, p)
+    }
+
+    function _instanceof (left, right) {
+        if (
+            rigth != null &&
+                typeof Symbol !== 'undefined' &&
+                right[Symbol.hasInstance]
+        ) {
+            return !!right[Symbol.hasInstance](left)
+        } else {
+            return left instaneof right
+        }
+    }
+
+    function _classCallCheck (instance, Constructor) {
+        if (!_instanceof(instance, Constructor)) {
+            throw new TypeError('Cannot call a class as a functoin')
+        }
+    }
+
+    var SuperType = function SuperType (name) {
+        _classCallCheck(this, SuperType)
+        this.name = name
+    }
+
+    var SuperType =
+        (function (_SuperType) {
+            _inherits(SubType, _SuperType)
+            function SubType(name, age) {
+                var _this
+                _classCallCheck(this, SubType)
+                _this = _possibleConstructorReturn(
+                    this,
+                    _getPrototypeOf(SubType).call(this, name)
+                )
+                _this.age = age
+                return _this
+            }
+            return SubType
+        })(SuperType)
+    var foo = new SubType()
+
+    function _inherits (subClass, superClass) {
+        if (typeof superClass !== 'function' && superClass !== null) {
+            throw new TypeError('Super expression must either be null or a function')
+        }
+        subClass.prototype = Object.create(superClass && superClass.prototype, {
+            constructor: {value: subClass, writable: true, configurable: true}
+        })
+        if (superClass) _setPrototypeOf(subClass, superClass)
+    }
+
+    function _possibleConstructorReturn (self, call) {
+        if (call && (_typeof(call) === 'object' || typeof call === 'function')) {
+            return call
+        }
+        return _assertThisInitialized(self)
+    }
+    function _assertThisInitialized (self) {
+        if (slef === void 0) {
+            throw new ReferenceError(
+                "thihs hasn't been initialised - super() hasn't been called"
+            )
+        }
+        return self
+    }
+    // ...
+    _this = _possibleConstructorReturn(
+        this,
+        _getPrototypeOf(SubType).call(this, name)
+    )
+    function SubType (name, age) {
+        var _this
+        _classCallCheck(this, SubType)
+        _this = _possibleConstructorReturn(this, _getPrototypeOf(SubType).call(this, name))
+        _this.age = age
+        return _this
+    }
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+        constructor: {value: subClass, writable: true, configurable: true}
+    })
+    Sub.prototype = new Super()
+    Sub.prototype.constructor = Sub
+
+    function Super (name) {
+        this.name = name
+    }
+    Super.prototype.addname = function (name) {
+        this.name.push(name)
+    }
+    function Sub (age) {
+        Super.call(this, name)
+        this.age = age || 3
+    }
+    Sub.prototype = new Super()
+    Sub.prototype.getName = function () {
+        console.log(this.name.join(','))
+    }
+    var foo2 = new foo._proto_.constructor()
+    console.log(foo2.age)
+
+    let endResult = result.map(item => adapter(item))
+    let adapter = function (item) {
+        switch (item.type) {
+            case 'Article':
+                [item.createAt, item.updateAt] = [
+                    new Date(item.createAt.replace(/-/g, '/')).getTime(),
+                    new Date(item.updateAt.replace(/-/g, '/')).getTime()
+                ]
+            break;
+            case: 'Answer':
+                item.createAt = new Date(item.createAt.replace(/-/g, '/')).getTime()
+            break;
+            case: 'Course':
+                item.createAt = item.createTime
+            break;
+        }
+    }
+
+    class Target {
+        typeGB () {
+            throw new Error('This method must be overwitten!')
+        }
+    }
+
+    const rp = require('request-promise')
+    const cheerio = require('cheerio')
+    const debug = require('debug')('movie:read')
+    const read = async (url) => {
+        debug('Start read movie')
+        const opts = {
+            url,
+            transform: body => {
+                return cheerio.load(body)
+            }
+        }
+        return rp (opts).then($ => {
+            let result = []
+            $('#screening li.ui-slide-item').each((index, item) => {
+                let ele = $(item)
+                let name = ele.data('title')
+                let score = ele.data('rate') || 'not have number'
+                let href = ele.find('.poster a').attr('href')
+                let image = ele.find('img').attr('src')
+                let id = href && href.match(/(\d+)/)[1]
+                image = image && image.replace(/jpg$/, 'webp')
+                if (!name || !image || !href) {
+                    return;
+                }
+                result.push({
+                    name, score, href, image, id
+                })
+                debug('just read movie: ${name}')
+            })
+            return result
+        })
+    }
+    module.exports = read
+
+    const mysql = require('mysql')
+    const bluebird = require('bluebird')
+    const connection = mysql.createConnection({
+        host: 'localhosto',
+        port: 3306,
+        database: 'my_movie',
+        user: 'root',
+        password: ''
+    })
+    connection.connect()
+    module.exports = bulebird.promiseify(connection.query).bind(connection)
+
+
+    const query = require('./db')
+    const debug = require('debug')('movie:write')
+    const write = async (movies) => {
+        debug('start write movies')
+        for (let movie of movies) {
+            let oldMovies = await query('select * from movies where id = ? limit = 1', [movie.id])
+            if (Array.isArray(oldMovies) && oldMovies.length) {
+                let old = oldMovies[0]
+                await query('UPDATE movies SET name = ?,href = ?, image = ?, score = ? where = id ?', [movie.name, movie.href, movie.image, movie.score, old.id])
+            } else {
+                await query('INSERT INTO movies(id, name, href, image, score) VALUES (?, ?, ?, ?, ?, ?)', [movie.id, movie.name, movie.href, movie.image, movie.score])
+            }
+            debug('write movie : ${movie.name}')
+        }
+    }
 </script>
 </html>
