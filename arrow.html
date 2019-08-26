@@ -1669,7 +1669,7 @@
             $('#screening li.ui-slide-item').each((index, item) => {
                 let ele = $(item)
                 let name = ele.data('title')
-                let score = ele.data('rate') || 'not have number'
+                let score = ele.data('rate') || 'not have numbe'
                 let href = ele.find('.poster a').attr('href')
                 let image = ele.find('img').attr('src')
                 let id = href && href.match(/(\d+)/)[1]
@@ -1690,7 +1690,7 @@
     const mysql = require('mysql')
     const bluebird = require('bluebird')
     const connection = mysql.createConnection({
-        host: 'localhosto',
+        host: 'localhost',
         port: 3306,
         database: 'my_movie',
         user: 'root',
@@ -1698,7 +1698,6 @@
     })
     connection.connect()
     module.exports = bulebird.promiseify(connection.query).bind(connection)
-
 
     const query = require('./db')
     const debug = require('debug')('movie:write')
@@ -1708,7 +1707,7 @@
             let oldMovies = await query('select * from movies where id = ? limit = 1', [movie.id])
             if (Array.isArray(oldMovies) && oldMovies.length) {
                 let old = oldMovies[0]
-                await query('UPDATE movies SET name = ?,href = ?, image = ?, score = ? where = id ?', [movie.name, movie.href, movie.image, movie.score, old.id])
+                await query('UPDATE movies SET name = ?, href = ?, image = ?, score = ? where = id ?', [movie.name, movie.href, movie.image, movie.score, old.id])
             } else {
                 await query('INSERT INTO movies(id, name, href, image, score) VALUES (?, ?, ?, ?, ?, ?)', [movie.id, movie.name, movie.href, movie.image, movie.score])
             }
