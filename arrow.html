@@ -1669,7 +1669,7 @@
             $('#screening li.ui-slide-item').each((index, item) => {
                 let ele = $(item)
                 let name = ele.data('title')
-                let score = ele.data('rate') || 'not have numbe'
+                let score = ele.data('rate') || 'not have number'
                 let href = ele.find('.poster a').attr('href')
                 let image = ele.find('img').attr('src')
                 let id = href && href.match(/(\d+)/)[1]
@@ -1713,6 +1713,109 @@
             }
             debug('write movie : ${movie.name}')
         }
+    }
+
+
+    import axios from 'axios'
+    function getLocalToken () {
+        const token = window.localStorage.getItem('token')
+        return token
+    }
+    instance.setToken = (token) => {
+        instance.defaults.headers['X-Token'] = token
+        window.localStorage
+    }
+
+
+    export default class Block {
+        constructor () {}
+        init (points, itemWidth, ctx) {
+            this.points = []
+            this.itemWidth = itemWidth
+            this.ctx = ctx
+            for (let i = 0; i < points.length; i ++) {
+                let point = points[i]
+                this.points.push ({
+                    x: point.x * this.itemWidth,
+                    y: point.y * this.itemWidth
+                })
+            }
+        }
+
+
+
+        draw () {
+            this.ctx.globalCompositeOperation = 'xor'
+            this.ctx.fillStyle = 'black'
+            this.ctx.beginPath()
+            this.ctx.moveTo(this.points[0].x, this.points[0].y)
+            for (let i = 1; i < this.points.length; i ++) {
+                let point = this.points[i]
+                this.ctx.lineTo(point.x, point,y)
+            }
+            this.ctx.closePath()
+            this.ctx.fill()
+        }
+    }
+
+
+
+    const polygonClipping = require('polygon-clipping')
+    function polygonXor (points) {
+        let poly = []
+        points.forEach(function (sub_points) {
+            let temp = []
+            sub_points.forEach(function (point) {
+                temp.push([point.x, point.y])
+            })
+            poly.push([temp])
+        })
+        let results = polygonClipping.xor(...poly)
+        let min_x = 100, min_y = 100
+
+        results.forEach(function (sub_result) {
+            sub_results.forEach(function (temps) {
+                temps.forEach(function (point) {
+                    if (point[0] < min_x) min_x = point[0]
+                    if (point[1] < min_y) min_y = point[1]
+                })
+            })
+        })
+        results.forEach(function (sub_result) {
+            sub_results.forEach(function (temps) {
+                temps.forEach(function (point) {
+                    point[0] -= min_x
+                    point[1] -= min_y
+                })
+            })
+        })
+
+        let result = this.polygonXor(points)
+
+
+        let sharedCanvas = wx.getSharedCanvas()
+
+        function drawRankList (data) {
+            data.forEach((item, index) => {
+
+            })
+        }
+        wx.getFriendCloudStorage({
+            success: res => {
+                let data = res.data
+                drawRankList(data)
+            }
+        })
+
+        let sharedCanvas = wx.getSharedCanvas()
+        let context = sharedCanvas.getContext('2d')
+        context.fillStyle = 'red'
+        context.fillRect(0, 0, 100, 100)
+        let openDataContext = wx.getOpenDataContext()
+        let sharedCanvas = openDataContext.canvas
+        let canvas = wx.createCanvas()
+        let context = canvas.getContext('2d')
+        context.drawImage(sharedCanvas, 0, 0)
     }
 </script>
 </html>
