@@ -1,6 +1,6 @@
 /*
 *
-* @desc 判断两个数组是否相等
+* @desc 鍒ゆ柇涓や釜鏁扮粍鏄惁鐩哥瓑
 * @param {Array} arr1
 * @param {Array} arr2
 * @return {Boolean}
@@ -17,7 +17,7 @@ function arrayEqual (arr1, arr2) {
 
 /*
 *
-*  @desc 微元素添加class
+*  @desc 寰厓绱犳坊鍔燾lass
 *  @param {HTMLElement} ele
 *  @param {String} cls
 *
@@ -30,7 +30,7 @@ function addClass (ele, cls) {
 }
 
 /*
-*  @desc 判断原始是否有某个class
+*  @desc 鍒ゆ柇鍘熷鏄惁鏈夋煇涓猚lass
 *  @param {HTMLElement} ele
 *  @param {String} cls
 *  @param {Boolean}
@@ -41,7 +41,7 @@ function hasClass (ele, cls) {
 }
 
 /*
-* @desc 为元素移除class
+* @desc 涓哄厓绱犵Щ闄lass
 * @param {HTMLElement} ele
 * @param {String} cls
 * */
@@ -55,7 +55,7 @@ function removeClass (ele, cls) {
 
 /*
 *
-*  @desc 根据name读取cookie
+*  @desc 鏍规嵁name璇诲彇cookie
 *  @param {String} name
 *  @param {String}
 * */
@@ -71,7 +71,7 @@ function getCookie (name) {
 }
 var setCookie = require('./setCookie')
 /*
-* @desc 根据name删除cookie
+* @desc 鏍规嵁name鍒犻櫎cookie
 * @param {String} name
 *
 *
@@ -81,7 +81,7 @@ function removeCookie (name) {
 }
 
 /*
-* @desc 设置cookie
+* @desc 璁剧疆cookie
 * @param {String} name
 * @param {String} value
 * @param {Number} days
@@ -91,3 +91,9 @@ function setCookie (name, value, days) {
     date.setDate(date.getDate() + days)
     document.cookie = name + '=' + value + ';expires' + date
 }
+
+
+
+
+
+
